@@ -19,7 +19,6 @@ import java.lang.reflect.ParameterizedType
  */
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
-
     val binding: VB by lazy {
         //使用反射得到viewbinding的class
         val type = javaClass.genericSuperclass as ParameterizedType

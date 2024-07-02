@@ -3,14 +3,6 @@ package com.gg.utils.multistatepage
 import androidx.annotation.DrawableRes
 import com.gg.utils.R
 
-/**
- * @description:
- * @author: Jinyu.Guo
- * @createDate: 2022/8/29 029 10:59
- * @updateUser:
- * @updateDate: 2022/8/29 029 10:59
- */
-
 data class MultiStateConfig(
     val errorMsg: String = "哎呀,出错了",
     @DrawableRes

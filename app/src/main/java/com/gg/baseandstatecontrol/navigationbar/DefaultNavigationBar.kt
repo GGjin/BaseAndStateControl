@@ -1,8 +1,6 @@
 package com.gg.baseandstatecontrol.navigationbar
 
 import android.content.Context
-import android.text.TextUtils
-import android.view.View
 import android.view.ViewGroup
 import com.gg.baseandstatecontrol.R
 import com.gg.baseandstatecontrol.navigationbar.DefaultNavigationBar.Builder.DefaultNavigationParams
@@ -12,10 +10,7 @@ import com.gg.baseandstatecontrol.navigationbar.DefaultNavigationBar.Builder.Def
  */
 class DefaultNavigationBar(params: DefaultNavigationParams?) : AbsNavigationBar<DefaultNavigationParams?>(params) {
 
-
-    override fun bindLayoutId(): Int {
-        return R.layout.title_bar
-    }
+    override fun bindLayoutId(): Int = R.layout.title_bar
 
     override fun applyViews() {
         params?.clickInfoMap?.forEach { (viewId, listener) ->
@@ -30,17 +25,9 @@ class DefaultNavigationBar(params: DefaultNavigationParams?) : AbsNavigationBar<
 
     }
 
-    class Builder : AbsNavigationBar.Builder<DefaultNavigationParams> {
-        override var P: DefaultNavigationParams
+    class Builder(context: Context?, parent: ViewGroup? = null) : AbsNavigationBar.Builder<DefaultNavigationParams>(context, parent) {
 
-        constructor(context: Context?, parent: ViewGroup?) : super(context!!, parent) {
-            P = DefaultNavigationParams(context, parent)
-        }
-
-        constructor(context: Context?) : super(context!!) {
-            P = DefaultNavigationParams(context, null)
-        }
-
+        override var P: DefaultNavigationParams = DefaultNavigationParams(context, parent)
 
         override fun create(): DefaultNavigationBar? {
             return DefaultNavigationBar(P)
@@ -76,8 +63,7 @@ class DefaultNavigationBar(params: DefaultNavigationParams?) : AbsNavigationBar<
             return this
         }
 
-
-        inner class DefaultNavigationParams(context: Context?, parent: ViewGroup?) : AbsNavigationParams(context!!, parent) {
+        inner class DefaultNavigationParams(context: Context?, parent: ViewGroup?) : AbsNavigationParams(context, parent) {
 
             var textInfoMap: MutableMap<Int, String?> = mutableMapOf()
             var clickInfoMap: MutableMap<Int, (() -> Unit)?> = mutableMapOf()

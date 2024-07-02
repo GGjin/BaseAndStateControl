@@ -10,9 +10,9 @@ package com.gg.baseandstatecontrol.utils
 
 class NavigationBarDSL {
 
-    var textInfoMap: MutableMap<Int, String?> = mutableMapOf()
-    var clickInfoMap: MutableMap<Int, (() -> Unit)?> = mutableMapOf()
-    var iconInfoMap: MutableMap<Int, Int?> = mutableMapOf()
+    val textInfoMap: MutableMap<Int, String?> = mutableMapOf()
+    val clickInfoMap: MutableMap<Int, (() -> Unit)?> = mutableMapOf()
+    val iconInfoMap: MutableMap<Int, Int?> = mutableMapOf()
 
     fun setText(viewId: Int, text: String?) {
         textInfoMap[viewId] = text

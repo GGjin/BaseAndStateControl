@@ -13,15 +13,11 @@ import kotlin.reflect.KProperty
  *  idName  表名，可不传，
  *  isMultiProgress 是否可以多进程访问，默认单进程访问
  */
-
-
-
 class MMKVExt<T : Any>(
     private val key: String? = null, private val defaultValue: T? = null, idName: String, isMultiProgress: Boolean
 ) : ReadWriteProperty<Any, T?> {
 
     private val kv: MMKV = MMKV.mmkvWithID(idName, if (isMultiProgress) MMKV.MULTI_PROCESS_MODE else MMKV.SINGLE_PROCESS_MODE)!!
-
 
     override fun getValue(thisRef: Any, property: KProperty<*>): T? {
         return findMMKV(key, defaultValue)
@@ -32,8 +28,7 @@ class MMKVExt<T : Any>(
         putMMKV(key, value)
     }
 
-
-    private fun <T : Any> findMMKV(name: String?, default: T?): T? = with(kv) {
+    private fun <T : Any> findMMKV(name: String?, default: T?): T = with(kv) {
         val res: Any = when (default) {
             is Long -> decodeLong(name, default)
             is String -> decodeString(name, default) ?: ""
@@ -42,7 +37,7 @@ class MMKVExt<T : Any>(
             is Float -> decodeFloat(name, default)
             else -> throw IllegalArgumentException("This type can be saved into Preferences")
         }
-        res as T?
+        res as T
     }
 
     private fun <T> putMMKV(name: String?, value: T?) = with(kv) {
@@ -55,7 +50,5 @@ class MMKVExt<T : Any>(
             else -> throw IllegalArgumentException("This type can be saved into Preferences")
         }
     }
-
-
 }
 

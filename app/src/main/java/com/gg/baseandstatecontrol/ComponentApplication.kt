@@ -21,7 +21,6 @@ class ComponentApplication : Application() {
 
         MMKV.initialize(this)
 
-
         val pageConfig = MultiStateConfig.Builder()
             .alphaDuration(300)
             .errorIcon(R.drawable.state_error)

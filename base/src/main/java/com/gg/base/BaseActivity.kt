@@ -17,8 +17,6 @@ import java.lang.reflect.ParameterizedType
  */
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
-    val stateView: MultiStateContainer by createMultiState()
-
     val binding: VB by lazy {
         //使用反射得到viewbinding的class
         val type = javaClass.genericSuperclass as ParameterizedType
@@ -26,6 +24,8 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         val method = aClass.getDeclaredMethod("inflate", LayoutInflater::class.java)
         method.invoke(null, layoutInflater) as VB
     }
+
+    val stateView: MultiStateContainer by createMultiState()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

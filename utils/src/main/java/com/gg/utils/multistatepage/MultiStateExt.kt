@@ -10,7 +10,6 @@ fun View.bindMultiState() = MultiStatePage.bindMultiState(this)
 
 fun Activity.bindMultiState() = MultiStatePage.bindMultiState(this)
 
-
 fun Activity.createMultiState() = lazy(LazyThreadSafetyMode.NONE) {
     bindMultiState()
 }

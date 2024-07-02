@@ -4,13 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 
-/**
- * @description:
- * @author: Jinyu.Guo
- * @createDate: 2022/8/29 029 11:01
- * @updateUser:
- * @updateDate: 2022/8/29 029 11:01
- */
 abstract class MultiState {
 
     /**

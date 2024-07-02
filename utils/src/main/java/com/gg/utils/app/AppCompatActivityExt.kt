@@ -101,8 +101,8 @@ fun Context.curProcessName(): String? {
     return null
 }
 
-fun dp2px(dpValue: Float): Float {
-    return (0.5f + dpValue * Resources.getSystem().displayMetrics.density)
+fun dp2px(dpValue: Number): Float {
+    return (0.5f + dpValue.toFloat() * Resources.getSystem().displayMetrics.density)
 }
 
 fun Float.px(): Float {
@@ -113,14 +113,14 @@ fun Int.px(): Int {
     return (0.5f + this * Resources.getSystem().displayMetrics.density).toInt()
 }
 
-fun dp2px2int(dpValue: Float): Int {
-    return (0.5f + dpValue * Resources.getSystem().displayMetrics.density).toInt()
+fun dp2px2int(dpValue: Number): Int {
+    return (0.5f + dpValue.toFloat() * Resources.getSystem().displayMetrics.density).toInt()
 }
 
 /**
  * dp转px
  */
-fun Context.dp2px(dp: Int): Int {
+fun Context.dp2px(dp: Number): Int {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         dp.toFloat(), this.resources.displayMetrics
@@ -130,7 +130,7 @@ fun Context.dp2px(dp: Int): Int {
 /**
  * dp转px(float)
  */
-fun Context.dp2fpx(dp: Int): Float {
+fun Context.dp2fpx(dp: Number): Float {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         dp.toFloat(), this.resources.displayMetrics
@@ -140,15 +140,15 @@ fun Context.dp2fpx(dp: Int): Float {
 /**
  * px转dp
  */
-fun Context.px2dp(px: Int): Int {
+fun Context.px2dp(px: Number): Int {
     val scale = this.resources.displayMetrics.density
-    return (px / scale + 0.5f).toInt()
+    return (px.toFloat() / scale + 0.5f).toInt()
 }
 
 /**
  * dp转px
  */
-fun Fragment.dp2px(dp: Int): Int {
+fun Fragment.dp2px(dp: Number): Int {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         dp.toFloat(), this.resources.displayMetrics
@@ -158,9 +158,9 @@ fun Fragment.dp2px(dp: Int): Int {
 /**
  * px转dp
  */
-fun Fragment.px2dp(px: Int): Int {
+fun Fragment.px2dp(px: Number): Int {
     val scale = this.resources.displayMetrics.density
-    return (px / scale + 0.5f).toInt()
+    return (px.toFloat() / scale + 0.5f).toInt()
 }
 
 /**
@@ -339,7 +339,6 @@ fun EditText.onlyChinese() {
     }
     this.filters = arrayOf(filter)
 }
-
 
 fun Int?.isNullOrZero(): Boolean {
     return this == null || this == 0

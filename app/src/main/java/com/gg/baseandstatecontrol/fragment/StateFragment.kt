@@ -1,10 +1,12 @@
 package com.gg.baseandstatecontrol.fragment
 
+import androidx.lifecycle.lifecycleScope
 import com.gg.base.BaseFragment
 import com.gg.baseandstatecontrol.databinding.FragmentStateBinding
 import com.gg.utils.multistatepage.state.ErrorState
 import com.gg.utils.multistatepage.state.LoadingState
 import com.gg.utils.multistatepage.state.SuccessState
+import kotlinx.coroutines.*
 
 
 /**
@@ -32,6 +34,10 @@ class StateFragment : BaseFragment<FragmentStateBinding>() {
         }
         binding.loading.setOnClickListener {
             stateView.show<LoadingState>()
+            lifecycleScope.launch {
+                delay(2000)
+                stateView.show<SuccessState>()
+            }
         }
     }
 

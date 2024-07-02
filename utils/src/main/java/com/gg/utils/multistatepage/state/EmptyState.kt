@@ -11,14 +11,6 @@ import com.gg.utils.multistatepage.MultiState
 import com.gg.utils.multistatepage.MultiStateContainer
 import com.gg.utils.multistatepage.MultiStatePage
 
-/**
- * @description:
- * @author: Jinyu.Guo
- * @createDate: 2022/8/29 029 11:04
- * @updateUser:
- * @updateDate: 2022/8/29 029 11:04
- */
-
 class EmptyState : MultiState() {
 
     private lateinit var tvEmptyMsg: TextView

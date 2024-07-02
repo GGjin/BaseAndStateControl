@@ -4,13 +4,6 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 
-/**
- * @description:
- * @author: Jinyu.Guo
- * @createDate: 2022/8/29 029 11:02
- * @updateUser:
- * @updateDate: 2022/8/29 029 11:02
- */
 object MultiStatePage {
 
     /**
@@ -20,7 +13,6 @@ object MultiStatePage {
      * 3.MultiStateContainer 的 layoutParams 是原目标View的 layoutParams
      */
     @JvmStatic
-    @JvmOverloads
     fun bindMultiState(
         targetView: View,
     ): MultiStateContainer {
@@ -48,15 +40,12 @@ object MultiStatePage {
      * 3. 将MultiStateContainer设置为 content的子View  MultiStateContainer中持有原有的Activity setContentView
      */
     @JvmStatic
-    @JvmOverloads
     fun bindMultiState(
         activity: Activity,
     ): MultiStateContainer {
-//        val targetView = activity.window.decorView as ViewGroup
         val targetView = activity.findViewById<ViewGroup>(android.R.id.content)
 
         val targetViewIndex = 0
-//        GeelyLog.w(targetView.childCount)
         val oldContent: View = targetView.getChildAt(targetViewIndex)
         targetView.removeView(oldContent)
         val oldLayoutParams = oldContent.layoutParams

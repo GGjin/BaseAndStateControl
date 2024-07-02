@@ -9,13 +9,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.gg.utils.multistatepage.state.SuccessState
 
-/**
- * @description:
- * @author: Jinyu.Guo
- * @createDate: 2022/8/29 029 11:01
- * @updateUser:
- * @updateDate: 2022/8/29 029 11:01
- */
 @Suppress("UNCHECKED_CAST")
 class MultiStateContainer : FrameLayout {
 
@@ -23,7 +16,7 @@ class MultiStateContainer : FrameLayout {
 
     private var lastState: MultiState? = null
 
-    var currentState: MultiState? = null
+    private var currentState: MultiState? = null
 
     private var statePool: MutableMap<Class<out MultiState>, MultiState> = mutableMapOf()
 
