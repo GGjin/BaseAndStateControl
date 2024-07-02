@@ -5,7 +5,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.view.*
 import android.widget.*
-import com.gg.baseandstatecontrol.navigationbar.AbsNavigationBar.Builder.AbsNavigationParams
+import com.gg.baseandstatecontrol.navigationbar.AbsNavigationBar.AbsNavigationParams
 import com.gg.utils.app.clickWithTrigger
 
 /**
@@ -56,18 +56,19 @@ abstract class AbsNavigationBar<P : AbsNavigationParams?>(val params: P) : INavi
         }
     }
 
-    private fun <T : View?> findViewById(viewId: Int): T? {
-        return mParentView?.findViewById<View>(viewId) as? T?
+    private inline fun <reified T : View> findViewById(viewId: Int): T? {
+        return mParentView?.findViewById<View>(viewId) as? T
     }
 
-    abstract class Builder<ANP : AbsNavigationParams> constructor(context: Context?, parent: ViewGroup? = null) {
+    abstract class Builder<ANP : AbsNavigationParams> {
 
-        open lateinit var P: ANP
+        open lateinit var anp: ANP
 
-        abstract fun create(): AbsNavigationBar<*>?
+        abstract fun create(): AbsNavigationBar<*>
 
-        open class AbsNavigationParams(val mContext: Context?, var mParent: ViewGroup?)
     }
+
+    open class AbsNavigationParams(val mContext: Context?, var mParent: ViewGroup?)
 
     init {
         createAndBindView()

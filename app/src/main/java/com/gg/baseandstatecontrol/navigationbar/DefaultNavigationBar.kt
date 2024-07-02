@@ -25,41 +25,39 @@ class DefaultNavigationBar(params: DefaultNavigationParams?) : AbsNavigationBar<
 
     }
 
-    class Builder(context: Context?, parent: ViewGroup? = null) : AbsNavigationBar.Builder<DefaultNavigationParams>(context, parent) {
+    class Builder(context: Context?, parent: ViewGroup? = null) : AbsNavigationBar.Builder<DefaultNavigationParams>() {
 
-        override var P: DefaultNavigationParams = DefaultNavigationParams(context, parent)
+        override var anp: DefaultNavigationParams = DefaultNavigationParams(context, parent)
 
-        override fun create(): DefaultNavigationBar? {
-            return DefaultNavigationBar(P)
-        }
+        override fun create(): DefaultNavigationBar = DefaultNavigationBar(anp)
 
         fun putText(viewId: Int, text: String?): Builder {
-            P.textInfoMap[viewId] = text
+            anp.textInfoMap[viewId] = text
             return this
         }
 
         fun putClick(viewId: Int, listener: (() -> Unit)? = null): Builder {
-            P.clickInfoMap[viewId] = listener
+            anp.clickInfoMap[viewId] = listener
             return this
         }
 
         fun putIcon(viewId: Int, imgId: Int?): Builder {
-            P.iconInfoMap[viewId] = imgId
+            anp.iconInfoMap[viewId] = imgId
             return this
         }
 
         fun putTextMap(map: MutableMap<Int, String?>): Builder {
-            P.textInfoMap.putAll(map)
+            anp.textInfoMap.putAll(map)
             return this
         }
 
         fun putClickMap(map: MutableMap<Int, (() -> Unit)?>): Builder {
-            P.clickInfoMap.putAll(map)
+            anp.clickInfoMap.putAll(map)
             return this
         }
 
         fun putIconMap(map: MutableMap<Int, Int?>): Builder {
-            P.iconInfoMap.putAll(map)
+            anp.iconInfoMap.putAll(map)
             return this
         }
 
