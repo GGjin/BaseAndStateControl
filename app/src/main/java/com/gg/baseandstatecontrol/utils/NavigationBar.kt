@@ -10,8 +10,6 @@ import com.gg.baseandstatecontrol.navigationbar.DefaultNavigationBar
  * @updateUser:
  * @updateDate: 2022/8/26 026 16:57
  */
-
-
 fun Activity.setNavigationBar(init: NavigationBarDSL.() -> Unit?) {
     val dsl = NavigationBarDSL()
     dsl.init()

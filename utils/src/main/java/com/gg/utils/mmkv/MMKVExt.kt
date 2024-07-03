@@ -13,21 +13,19 @@ import kotlin.reflect.KProperty
  *  idName  表名，可不传，
  *  isMultiProgress 是否可以多进程访问，默认单进程访问
  */
-class MMKVExt<T : Any>(
-    private val key: String? = null, private val defaultValue: T? = null, idName: String, isMultiProgress: Boolean
-) : ReadWriteProperty<Any, T?> {
+class MMKVExt<T : Any>(private val key: String? = null, private val defaultValue: T? = null, idName: String, isMultiProgress: Boolean) : ReadWriteProperty<Any, T?> {
 
-    private val kv: MMKV = MMKV.mmkvWithID(idName, if (isMultiProgress) MMKV.MULTI_PROCESS_MODE else MMKV.SINGLE_PROCESS_MODE)!!
+    private val kv: MMKV = MMKV.mmkvWithID(idName, if (isMultiProgress) MMKV.MULTI_PROCESS_MODE else MMKV.SINGLE_PROCESS_MODE)
 
-    override fun getValue(thisRef: Any, property: KProperty<*>): T? {
+    override fun getValue(thisRef: Any, property: KProperty<*>): T {
         return findMMKV(key, defaultValue)
     }
-
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: T?) {
         putMMKV(key, value)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T : Any> findMMKV(name: String?, default: T?): T = with(kv) {
         val res: Any = when (default) {
             is Long -> decodeLong(name, default)

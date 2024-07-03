@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.gg.baseandstatecontrol'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.gg.baseandstatecontrol"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -38,6 +38,7 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.7.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.0.0"
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'

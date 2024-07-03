@@ -1,13 +1,10 @@
 package com.gg.base
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import com.gg.utils.multistatepage.MultiStateContainer
-import com.gg.utils.multistatepage.createMultiState
+import com.gg.utils.multistatepage.*
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -19,7 +16,8 @@ import java.lang.reflect.ParameterizedType
  */
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
-    val binding: VB by lazy {
+    @Suppress("UNCHECKED_CAST")
+    val mBinding: VB by lazy {
         //使用反射得到viewbinding的class
         val type = javaClass.genericSuperclass as ParameterizedType
         val aClass = type.actualTypeArguments[0] as Class<*>
@@ -29,9 +27,7 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
 
     val stateView: MultiStateContainer by createMultiState()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return binding.root
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View = mBinding.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-import com.gg.utils.multistatepage.MultiStateContainer
-import com.gg.utils.multistatepage.createMultiState
+import com.gg.utils.multistatepage.*
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -17,7 +16,8 @@ import java.lang.reflect.ParameterizedType
  */
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
-    val binding: VB by lazy {
+    @Suppress("UNCHECKED_CAST")
+    val mBinding: VB by lazy {
         //使用反射得到viewbinding的class
         val type = javaClass.genericSuperclass as ParameterizedType
         val aClass = type.actualTypeArguments[0] as Class<*>
@@ -30,7 +30,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(binding.root)
+        setContentView(mBinding.root)
 
         initView()
         initData()

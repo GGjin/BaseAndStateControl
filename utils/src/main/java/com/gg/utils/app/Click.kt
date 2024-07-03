@@ -26,8 +26,8 @@ fun <T : View> T.withTrigger(delay: Long = 600): T {
  * @param block: (T) -> Unit 函数
  * @return Unit
  */
+@Suppress("UNCHECKED_CAST")
 fun <T : View> T.click(block: (T) -> Unit) = setOnClickListener {
-
     if (clickEnable()) {
         block(it as T)
     }
@@ -39,6 +39,7 @@ fun <T : View> T.click(block: (T) -> Unit) = setOnClickListener {
  * @param block: (T) -> Unit 函数
  * @return Unit
  */
+@Suppress("UNCHECKED_CAST")
 fun <T : View> T.clickWithTrigger(time: Long = 600, block: (T) -> Unit) {
     triggerDelay = time
     setOnClickListener {

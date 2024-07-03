@@ -35,15 +35,13 @@ import java.util.regex.Pattern
  */
 
 fun Activity.setTransparent() {
-    if (Build.VERSION.SDK_INT >= 21) {
-        val decorView = window.decorView
-        val option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-        decorView.systemUiVisibility = option
-        window.navigationBarColor = Color.TRANSPARENT
-        window.statusBarColor = Color.TRANSPARENT
-    }
+    val decorView = window.decorView
+    val option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+    decorView.systemUiVisibility = option
+    window.navigationBarColor = Color.TRANSPARENT
+    window.statusBarColor = Color.TRANSPARENT
 }
 
 /**

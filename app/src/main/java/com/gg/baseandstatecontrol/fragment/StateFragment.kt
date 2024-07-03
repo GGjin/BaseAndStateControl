@@ -25,14 +25,14 @@ class StateFragment : BaseFragment<FragmentStateBinding>() {
             stateView.show<SuccessState>()
         }
 
-        binding.error.setOnClickListener {
+        mBinding.error.setOnClickListener {
             stateView.show(errorState)
 
         }
-        binding.normal.setOnClickListener {
+        mBinding.normal.setOnClickListener {
             stateView.show<SuccessState>()
         }
-        binding.loading.setOnClickListener {
+        mBinding.loading.setOnClickListener {
             stateView.show<LoadingState>()
             lifecycleScope.launch {
                 delay(2000)
