@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-import com.gg.utils.multistatepage.*
+import com.gg.base.utils.createMultiState
+import com.zy.multistatepage.MultiStateContainer
 import java.lang.reflect.ParameterizedType
 
 /**

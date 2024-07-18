@@ -1,8 +1,11 @@
 package com.gg.base.utils
 
-import android.view.LayoutInflater
+import android.app.Activity
+import android.view.*
 import androidx.activity.ComponentActivity
+import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.zy.multistatepage.bindMultiState
 
 /**
  * @description:
@@ -22,5 +25,13 @@ fun <VB : ViewBinding> ComponentActivity.binding(inflate: (LayoutInflater) -> VB
     inflate(layoutInflater).also { binding ->
         if (setContentView) setContentView(binding.root)
     }
+}
+
+fun Activity.createMultiState() = lazy(LazyThreadSafetyMode.NONE) {
+    bindMultiState()
+}
+
+fun Fragment.createMultiState(view: View? = null) = lazy(LazyThreadSafetyMode.NONE) {
+    (view ?: requireView()).bindMultiState()
 }
 

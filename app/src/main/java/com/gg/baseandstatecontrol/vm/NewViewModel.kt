@@ -8,7 +8,6 @@ import com.gg.base.BaseViewModel
  * Date: 2024/7/3
  * Description:
  */
-class NewViewModel :BaseViewModel() {
-
+class NewViewModel : BaseViewModel() {
 
 }

@@ -1,9 +1,8 @@
 package com.gg.baseandstatecontrol
 
 import android.app.Application
-import com.gg.utils.multistatepage.MultiStateConfig
-import com.gg.utils.multistatepage.MultiStatePage
 import com.tencent.mmkv.MMKV
+import com.zy.multistatepage.*
 
 class ComponentApplication : Application() {
 

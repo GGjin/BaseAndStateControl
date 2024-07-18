@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    // kapt/ksp choose one
+    // id 'kotlin-kapt'
+    id("com.google.devtools.ksp") version "2.0.0-1.0.23"
 }
 
 android {
@@ -35,6 +38,9 @@ android {
     }
 }
 
+ksp {
+    arg("rxhttp_package", "rxhttp")  //指定RxHttp类包名，可随意指定
+}
 
 dependencies {
 
@@ -57,4 +63,9 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.okhttp)
+    implementation(libs.rxhttp)
+    // ksp/kapt/annotationProcessor choose one
+    ksp(libs.rxhttp.compiler)
+    implementation(libs.converter.moshi)
 }

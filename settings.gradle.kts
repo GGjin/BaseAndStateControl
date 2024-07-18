@@ -18,9 +18,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = URI("https://jitpack.io") }
     }
 }
 rootProject.name = "BaseAndStateControl"
-include ':app'
-include ':base'
-include ':utils'
+include (":app")
+include (":base")
+include (":utils")

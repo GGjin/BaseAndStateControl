@@ -1,4 +1,4 @@
-package com.gg.baseandstatecontrol.fragment
+package com.gg.baseandstatecontrol.activity
 
 import androidx.activity.viewModels
 import com.gg.base.BaseActivity
@@ -11,9 +11,9 @@ import com.gg.baseandstatecontrol.vm.NewViewModel
  * Date: 2024/7/3
  * Description:
  */
-class NewActivity :BaseActivity<ActivityNewBinding>() {
+class NewActivity : BaseActivity<ActivityNewBinding>() {
 
-    private val  mViewModel : NewViewModel by viewModels()
+    private val mViewModel: NewViewModel by viewModels()
 
     override fun initView() {
 

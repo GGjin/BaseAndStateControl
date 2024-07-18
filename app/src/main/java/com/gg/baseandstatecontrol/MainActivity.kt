@@ -17,7 +17,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
         val fragment = StateFragment()
 
-        supportFragmentManager.beginTransaction().add(R.id.fragment, fragment).commit()
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.fragment, fragment)
+            .commit()
     }
 
     override fun initData() {
