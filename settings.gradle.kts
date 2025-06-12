@@ -1,5 +1,8 @@
 import java.net.URI
 
+include(":lib_widget")
+
+
 pluginManagement {
     repositories {
         google {

@@ -55,6 +55,7 @@ dependencies {
 
     implementation(project(":utils"))
     implementation(project(":base"))
+    implementation(project(":lib_widget"))
 
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -68,4 +69,5 @@ dependencies {
     // ksp/kapt/annotationProcessor choose one
     ksp(libs.rxhttp.compiler)
     implementation(libs.converter.moshi)
+    implementation("com.blankj:utilcode:1.30.7")
 }

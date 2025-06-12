@@ -1,10 +1,12 @@
 package com.gg.baseandstatecontrol.fragment
 
 import androidx.lifecycle.lifecycleScope
+import com.blankj.utilcode.util.LogUtils
 import com.gg.base.BaseFragment
 import com.gg.baseandstatecontrol.databinding.FragmentStateBinding
 import com.zy.multistatepage.state.*
 import kotlinx.coroutines.*
+import kotlin.time.measureTime
 
 class StateFragment : BaseFragment<FragmentStateBinding>() {
 
@@ -29,6 +31,12 @@ class StateFragment : BaseFragment<FragmentStateBinding>() {
                 stateView.show<SuccessState>()
             }
         }
+        val time = measureTime {
+            CoroutineScope(Dispatchers.Default).launch {
+
+            }
+        }
+//        LogUtils.w(time)
     }
 
     override fun initData() {
