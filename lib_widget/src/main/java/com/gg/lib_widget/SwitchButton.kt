@@ -15,7 +15,6 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.animation.addListener
 import androidx.core.graphics.toColorInt
-import com.blankj.utilcode.util.LogUtils
 import com.gg.utils.app.dp2px
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
@@ -177,8 +176,8 @@ class SwitchButton : View {
             typedArray = context.obtainStyledAttributes(attrs, R.styleable.SwitchButton)
         }
         isCanLoading = optBoolean(typedArray, R.styleable.SwitchButton_sb_can_loading, false)
-        endColor = optColor(typedArray, R.styleable.SwitchButton_sb_end_color, Color.RED)
-        startColor = optColor(typedArray, R.styleable.SwitchButton_sb_start_color, Color.GREEN)
+        endColor = optColor(typedArray, R.styleable.SwitchButton_sb_end_color, Color.GREEN)
+        startColor = optColor(typedArray, R.styleable.SwitchButton_sb_start_color, "#BDBDBD".toColorInt())
         ringBgColor = optColor(typedArray, R.styleable.SwitchButton_sb_ring_color, "#BDBDBD".toColorInt())
         progressColor = optColor(typedArray, R.styleable.SwitchButton_sb_progress_color, "#42A5F5".toColorInt())
         borderWidth = optPixelSize(typedArray, R.styleable.SwitchButton_sb_border_width, 2.dp2px())
@@ -260,6 +259,7 @@ class SwitchButton : View {
     private fun setLoadingViewState(withAnimator: Boolean) {
         afterState.radius = viewRadius
         afterState.buttonX = centerX
+        afterState.checkStateColor = ringBgColor
         if (withAnimator) {
             setLoadingProgress()
         }
@@ -400,7 +400,6 @@ class SwitchButton : View {
                 } else {
                     setState(SwitchState.True)
                 }
-
             }
             return true
         }
@@ -438,7 +437,6 @@ class SwitchButton : View {
                 viewState.buttonX = animation.animatedValue as Float
                 invalidate()
             }
-
         }
         animatorSet.addListener(onEnd = {
             endFlow?.invoke()
