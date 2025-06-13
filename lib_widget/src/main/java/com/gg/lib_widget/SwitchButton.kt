@@ -1,31 +1,40 @@
 package com.gg.lib_widget
 
+import android.animation.AnimatorSet
+import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.content.res.Resources
 import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.animation.addListener
 import androidx.core.graphics.toColorInt
+import com.blankj.utilcode.util.LogUtils
+import com.gg.utils.app.dp2px
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * SwitchButton.
+ * @description:
+ * @author: GG
+ * @createDate: 2025 6月 12 15:08
  */
 class SwitchButton : View {
 
     private val gestureDetector: GestureDetector by lazy { GestureDetector(context, GestureListener()) }
+
+    private var listener: ((SwitchButton, SwitchState) -> Unit)? = null
+    /**
+     * 按钮半径
+     */
 
     /**
      * 背景半径
@@ -56,6 +65,8 @@ class SwitchButton : View {
     private var bottom = 0f
     private var centerX = 0f
     private var centerY = 0f
+
+    private var isCanLoading = false
 
     /**
      * button在end的 背景颜色
@@ -104,22 +115,38 @@ class SwitchButton : View {
     // 进度颜色
     private var progressColor = 0
 
+    private val buttonDuration = 200L
+    private val loadingDuration = 1000L
+
     /**
      * 当前状态
      */
     private var viewState: ViewState = ViewState()
-    private var oldState: ViewState = ViewState()
+    private var afterState: ViewState = ViewState()
+    private var beforeState: ViewState = ViewState()
+
+    private var state: SwitchState? = null
 
     private var isButtonAnimating = false
     private val loadingAnimator by lazy {
         ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 1000
+            duration = loadingDuration
             repeatCount = ValueAnimator.INFINITE
             interpolator = AccelerateDecelerateInterpolator()
         }
     }
 
+    private val colorAnimator by lazy {
+        ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = buttonDuration
+            interpolator = AccelerateDecelerateInterpolator()
+        }
+    }
+
     private var animator: ValueAnimator? = null
+    private val animatorSet by lazy { AnimatorSet() }
+
+    private val argbEvaluator by lazy { ArgbEvaluator() }
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -130,7 +157,9 @@ class SwitchButton : View {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context, attrs, defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     ) {
         init(context, attrs)
     }
@@ -147,17 +176,19 @@ class SwitchButton : View {
         if (attrs != null) {
             typedArray = context.obtainStyledAttributes(attrs, R.styleable.SwitchButton)
         }
+        isCanLoading = optBoolean(typedArray, R.styleable.SwitchButton_sb_can_loading, false)
         endColor = optColor(typedArray, R.styleable.SwitchButton_sb_end_color, Color.RED)
         startColor = optColor(typedArray, R.styleable.SwitchButton_sb_start_color, Color.GREEN)
-        ringBgColor = optColor(typedArray, R.styleable.SwitchButton_sb_ring_Color, "#BDBDBD".toColorInt())
-        progressColor = optColor(typedArray, R.styleable.SwitchButton_sb_progress_Color, "#42A5F5".toColorInt())
-        borderWidth = optPixelSize(typedArray, R.styleable.SwitchButton_sb_border_width, dp2pxInt(2f))
+        ringBgColor = optColor(typedArray, R.styleable.SwitchButton_sb_ring_color, "#BDBDBD".toColorInt())
+        progressColor = optColor(typedArray, R.styleable.SwitchButton_sb_progress_color, "#42A5F5".toColorInt())
+        borderWidth = optPixelSize(typedArray, R.styleable.SwitchButton_sb_border_width, 2.dp2px())
         val stateInt = optInt(typedArray, R.styleable.SwitchButton_sb_state, 0)
-        viewState.state = when (stateInt) {
+        afterState.state = when (stateInt) {
             0 -> SwitchState.True
             1 -> SwitchState.False
             else -> SwitchState.Loading
         }
+        viewState.copy(afterState)
         typedArray?.recycle()
         super.setClickable(true)
         setPadding(0, 0, 0, 0)
@@ -194,51 +225,49 @@ class SwitchButton : View {
         buttonMinX = left + viewRadius
         buttonMaxX = right - viewRadius
         updateViewState(false)
+        viewState.copy(afterState)
         invalidate()
     }
 
     private fun updateViewState(withAnimator: Boolean) {
-        when (viewState.state) {
+        when (afterState.state) {
             SwitchState.True -> setStartViewState(withAnimator)
             SwitchState.False -> setEndViewState(withAnimator)
             else -> setLoadingViewState(withAnimator)
         }
     }
 
-    /**
-     * @param viewState
-     */
     private fun setStartViewState(withAnimator: Boolean) {
-        viewState.radius = viewRadius
-        viewState.checkStateColor = startColor
-        viewState.buttonX = buttonMinX
+        afterState.radius = viewRadius
+        afterState.checkStateColor = startColor
+        afterState.buttonX = buttonMinX
         loadingAnimator.cancel()
-        if (withAnimator)
+        if (withAnimator) {
             setButtonProgress()
+        }
     }
 
-    /**
-     * @param viewState
-     */
     private fun setEndViewState(withAnimator: Boolean) {
-        viewState.radius = 0f
-        viewState.checkStateColor = endColor
-        viewState.buttonX = buttonMaxX
+        afterState.radius = 0f
+        afterState.checkStateColor = endColor
+        afterState.buttonX = buttonMaxX
         loadingAnimator.cancel()
-        if (withAnimator)
+        if (withAnimator) {
             setButtonProgress()
+        }
     }
 
     private fun setLoadingViewState(withAnimator: Boolean) {
-        viewState.radius = viewRadius
-        viewState.buttonX = centerX
-        if (withAnimator)
+        afterState.radius = viewRadius
+        afterState.buttonX = centerX
+        if (withAnimator) {
             setLoadingProgress()
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (viewState.state == SwitchState.Loading && !isButtonAnimating) {
+        if (afterState.state == SwitchState.Loading && !isButtonAnimating) {
             drawLoading(canvas)
             return
         }
@@ -246,16 +275,15 @@ class SwitchButton : View {
         paint.style = Paint.Style.FILL
         paint.color = viewState.checkStateColor
         paint.strokeWidth = borderWidth.toFloat()
-        val a = viewState.buttonX - centerX
         if (isButtonAnimating) {
-            if (oldState.state == SwitchState.True) {
+            if (beforeState.state == SwitchState.True) {
                 drawRoundRect(canvas, viewState.buttonX - viewRadius - borderWidth, top, right - viewState.buttonX + viewRadius + borderWidth, bottom, viewRadius, paint)
             } else {
                 drawRoundRect(canvas, centerX * 2 - viewState.buttonX - viewRadius, top, viewState.buttonX + viewRadius + borderWidth, bottom, viewRadius, paint)
             }
         } else {
-            if (oldState.state == SwitchState.Loading) {
-                if (viewState.state == SwitchState.True) {
+            if (beforeState.state == SwitchState.Loading) {
+                if (afterState.state == SwitchState.True) {
                     drawRoundRect(canvas, viewState.buttonX - viewRadius - borderWidth, top, right - viewState.buttonX + viewRadius + borderWidth, bottom, viewRadius, paint)
                 } else {
                     drawRoundRect(canvas, centerX * 2 - viewState.buttonX - viewRadius, top, viewState.buttonX + viewRadius + borderWidth, bottom, viewRadius, paint)
@@ -300,16 +328,18 @@ class SwitchButton : View {
     }
 
     fun setState(state: SwitchState, withAnimator: Boolean = true) {
-        // 如果状态相同，则不做任何操作
-        if (oldState.state == viewState.state)
+        if (beforeState.state == viewState.state) {
             return
-        oldState.copy(viewState)
-        viewState.state = state
+        }
+        beforeState.copy(viewState)
+        afterState.state = state
         updateViewState(withAnimator)
     }
 
-    interface OnCheckedChangeListener {
-        fun onCheckedChanged(view: SwitchButton?, state: SwitchState)
+    fun getState(): SwitchState = viewState.state!!
+
+    fun setSwitchStateListener(listener: (SwitchButton, SwitchState) -> Unit) {
+        this.listener = listener
     }
 
     /**
@@ -347,21 +377,31 @@ class SwitchButton : View {
     inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
 
         override fun onDown(e: MotionEvent): Boolean {
-            isButtonAnimating = true
-            setState(SwitchState.Loading)
-//            GlobalScope.launch {
-//                delay(1500)
-//                MainScope().launch {
-//                    if (oldState.state == SwitchState.True) {
-//                        setState(SwitchState.False)
-//                    } else {
-//                        setState(SwitchState.True)
-//                    }
-//                }
-//            }
-            /**
-             * 弹出软键盘
-             */
+            // 如果状态相同，则不做任何操作
+            if (beforeState.state == viewState.state || viewState.state == SwitchState.Loading) {
+                return true
+            }
+            if (isCanLoading) {
+                isButtonAnimating = true
+                setState(SwitchState.Loading)
+                GlobalScope.launch {
+                    delay(1500)
+                    MainScope().launch {
+                        if (beforeState.state == SwitchState.True) {
+                            setState(SwitchState.False)
+                        } else {
+                            setState(SwitchState.True)
+                        }
+                    }
+                }
+            } else {
+                if (viewState.state == SwitchState.True) {
+                    setState(SwitchState.False)
+                } else {
+                    setState(SwitchState.True)
+                }
+
+            }
             return true
         }
     }
@@ -384,39 +424,45 @@ class SwitchButton : View {
      * 设置进度，带动画
      */
     private fun setButtonProgress(endFlow: (() -> Unit)? = null) {
-        animator = ValueAnimator.ofFloat(oldState.buttonX, viewState.buttonX).apply {
-            duration = 200
+        colorAnimator.addUpdateListener { animation ->
+            viewState.checkStateColor = argbEvaluator.evaluate(
+                animation.animatedValue as Float,
+                beforeState.checkStateColor,
+                afterState.checkStateColor
+            ) as Int
+        }
+        animator = ValueAnimator.ofFloat(beforeState.buttonX, afterState.buttonX).apply {
+            duration = buttonDuration
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animation ->
                 viewState.buttonX = animation.animatedValue as Float
                 invalidate()
             }
-            addListener(onEnd = {
-                endFlow?.invoke()
-            })
+
         }
-        animator?.start()
+        animatorSet.addListener(onEnd = {
+            endFlow?.invoke()
+            viewState.copy(afterState)
+            if (state != viewState.state) {
+                state = viewState.state
+                listener?.invoke(this@SwitchButton, state!!)
+            }
+        })
+        animatorSet.playTogether(animator, colorAnimator)
+        animatorSet.start()
     }
 
     enum class SwitchState {
-        True, False, Loading
+        True,
+        False,
+        Loading
     }
 
     companion object {
-        private val DEFAULT_WIDTH = dp2pxInt(58f)
-        private val DEFAULT_HEIGHT = dp2pxInt(36f)
-
-        /** */
-        private fun dp2px(dp: Float): Float {
-            val r = Resources.getSystem()
-            return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics)
-        }
-
-        private fun dp2pxInt(dp: Float): Int = dp2px(dp).toInt()
+        private val DEFAULT_WIDTH = 58.dp2px()
+        private val DEFAULT_HEIGHT = 36.dp2px()
 
         private fun optInt(typedArray: TypedArray?, index: Int, def: Int): Int = typedArray?.getInt(index, def) ?: def
-
-        private fun optPixelSize(typedArray: TypedArray?, index: Int, def: Float): Float = typedArray?.getDimension(index, def) ?: def
 
         private fun optPixelSize(typedArray: TypedArray?, index: Int, def: Int): Int = typedArray?.getDimensionPixelOffset(index, def) ?: def
 

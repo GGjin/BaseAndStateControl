@@ -1,4 +1,5 @@
 @file:JvmName("AndroidUtils")
+
 package com.gg.utils.app
 
 import android.app.Activity
@@ -10,7 +11,6 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
-import android.os.Build
 import android.telephony.TelephonyManager
 import android.text.InputFilter
 import android.util.DisplayMetrics
@@ -28,7 +28,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import java.util.regex.Pattern
-
 
 /**
  *  Creator : GG
@@ -201,7 +200,6 @@ fun Context.versionCode(): Int =
         0
     }
 
-
 /**
  * 通过反射的方式获取状态栏高度
  *
@@ -294,7 +292,6 @@ fun Context?.checkAppInstalled(name: String): Boolean {
 
 fun AppCompatActivity.context(): Context = this
 
-
 fun Fragment.toast(
     int: Int,
     length: Int = Toast.LENGTH_SHORT,
@@ -312,7 +309,6 @@ fun String.isPhoneNum(): Boolean {
     val m = p.matcher(this)
     return m.matches()
 }
-
 
 /**
  * 判定输入汉字
@@ -435,5 +431,26 @@ fun Context.getAPNType(): Int {
         }
     }
     return netType
+}
+
+fun <T : Number> T.dp2px(): T {
+    val result = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this.toFloat(),
+        Resources.getSystem().displayMetrics
+    )
+
+    return when (this) {
+        is Int -> result.toInt() as T
+        is Long -> result.toLong() as T
+        is Float -> result as T
+        is Double -> result.toDouble() as T
+        else -> result as T
+    }
+}
+
+fun Number.px2dp(): Int {
+    val scale = Resources.getSystem().displayMetrics.density
+    return (this.toFloat() / scale + 0.5f).toInt()
 }
 

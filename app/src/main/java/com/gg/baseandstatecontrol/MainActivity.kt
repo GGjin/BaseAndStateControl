@@ -33,7 +33,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
             }
         }
-        LogUtils.w(time)
+        mBinding.switchButton.setSwitchStateListener { _, state ->
+            LogUtils.w("------>$state")
+        }
+//        LogUtils.w(time)
     }
 
     override fun initData() {

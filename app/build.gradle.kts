@@ -69,5 +69,5 @@ dependencies {
     // ksp/kapt/annotationProcessor choose one
     ksp(libs.rxhttp.compiler)
     implementation(libs.converter.moshi)
-    implementation("com.blankj:utilcode:1.30.7")
+    implementation(libs.utilcode)
 }

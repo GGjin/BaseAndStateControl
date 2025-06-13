@@ -5,13 +5,14 @@
         <attr name="sb_end_color" format="reference|color" />
 
         <attr name="sb_border_width" format="reference|dimension" />
+        <attr name="sb_can_loading" format="boolean" />
 
         <attr name="sb_state" format="enum">
             <enum name="state_true" value="0" />
             <enum name="state_false" value="1" />
             <enum name="state_loading" value="2" />
         </attr>
-        <attr name="sb_ring_Color" format="reference|color" />
-        <attr name="sb_progress_Color" format="reference|color" />
+        <attr name="sb_ring_color" format="reference|color" />
+        <attr name="sb_progress_color" format="reference|color" />
     </declare-styleable>
 </resources>
