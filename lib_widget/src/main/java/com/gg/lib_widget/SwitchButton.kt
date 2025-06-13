@@ -64,6 +64,10 @@ class SwitchButton : View {
     private var bottom = 0f
     private var centerX = 0f
     private var centerY = 0f
+    private var ringLeft = 0f
+    private var ringRight = 0f
+    private var ringTop = 0f
+    private var ringBottom = 0f
 
     private var isCanLoading = false
 
@@ -98,6 +102,7 @@ class SwitchButton : View {
     private val buttonPaint: Paint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.WHITE
+            style = Paint.Style.FILL
         }
     }
 
@@ -114,7 +119,7 @@ class SwitchButton : View {
     // 进度颜色
     private var progressColor = 0
 
-    private val buttonDuration = 200L
+    private val buttonDuration = 100L
     private val loadingDuration = 1000L
 
     /**
@@ -180,7 +185,7 @@ class SwitchButton : View {
         startColor = optColor(typedArray, R.styleable.SwitchButton_sb_start_color, "#BDBDBD".toColorInt())
         ringBgColor = optColor(typedArray, R.styleable.SwitchButton_sb_ring_color, "#BDBDBD".toColorInt())
         progressColor = optColor(typedArray, R.styleable.SwitchButton_sb_progress_color, "#42A5F5".toColorInt())
-        borderWidth = optPixelSize(typedArray, R.styleable.SwitchButton_sb_border_width, 2.dp2px())
+        borderWidth = optPixelSize(typedArray, R.styleable.SwitchButton_sb_border_width, 3.dp2px())
         val stateInt = optInt(typedArray, R.styleable.SwitchButton_sb_state, 0)
         afterState.state = when (stateInt) {
             0 -> SwitchState.True
@@ -221,6 +226,10 @@ class SwitchButton : View {
         bottom = h - viewPadding
         centerX = (left + right) * 0.5f
         centerY = (top + bottom) * 0.5f
+        ringLeft = centerX - buttonRadius - borderWidth
+        ringRight = centerX + buttonRadius + borderWidth
+        ringTop = centerY - buttonRadius - borderWidth
+        ringBottom = centerY + buttonRadius + borderWidth
         buttonMinX = left + viewRadius
         buttonMaxX = right - viewRadius
         updateViewState(false)
@@ -284,9 +293,9 @@ class SwitchButton : View {
         } else {
             if (beforeState.state == SwitchState.Loading) {
                 if (afterState.state == SwitchState.True) {
-                    drawRoundRect(canvas, viewState.buttonX - viewRadius - borderWidth, top, right - viewState.buttonX + viewRadius + borderWidth, bottom, viewRadius, paint)
+                    drawRoundRect(canvas, viewState.buttonX - viewRadius, top, right - viewState.buttonX + viewRadius + borderWidth, bottom, viewRadius, paint)
                 } else {
-                    drawRoundRect(canvas, centerX * 2 - viewState.buttonX - viewRadius, top, viewState.buttonX + viewRadius + borderWidth, bottom, viewRadius, paint)
+                    drawRoundRect(canvas, centerX * 2 - viewState.buttonX - viewRadius, top, viewState.buttonX + viewRadius, bottom, viewRadius, paint)
                 }
             } else {
                 drawRoundRect(canvas, left, top, right, bottom, viewRadius, paint)
@@ -298,14 +307,11 @@ class SwitchButton : View {
 
     private fun drawLoading(canvas: Canvas) {
         paint.color = ringBgColor
-        paint.strokeWidth = borderWidth.toFloat() * 1.5f
-        // 绘制圆环背景
-        canvas.drawArc(centerX - viewRadius + borderWidth, centerY - viewRadius + borderWidth, centerX + viewRadius - borderWidth, centerY + viewRadius - borderWidth, 0f, 360f, false, paint)
-        // 绘制进度弧，从 -90 度开始（让进度从顶部开始），扫过的角度根据进度计算
+        paint.strokeWidth = borderWidth.toFloat()
+        canvas.drawArc(ringLeft, ringTop, ringRight, ringBottom, 0f, 360f, false, paint)
         paint.color = progressColor
-        canvas.drawArc(centerX - viewRadius + borderWidth, centerY - viewRadius + borderWidth, centerX + viewRadius - borderWidth, centerY + viewRadius - borderWidth, -120f + viewState.progress * 360f, 80f, false, paint)
-        buttonPaint.style = Paint.Style.FILL
-        canvas.drawCircle(centerX, centerY, buttonRadius - borderWidth + 1f, buttonPaint)
+        canvas.drawArc(ringLeft, ringTop, ringRight, ringBottom, -120f + viewState.progress * 360f, 80f, true, paint)
+        drawButton(canvas, centerX, centerY)
     }
 
     private fun drawRoundRect(canvas: Canvas, left: Float, top: Float, right: Float, bottom: Float, backgroundRadius: Float, paint: Paint) {
@@ -313,9 +319,7 @@ class SwitchButton : View {
     }
 
     private fun drawButton(canvas: Canvas, x: Float, y: Float) {
-        buttonPaint.let { canvas.drawCircle(x, y, buttonRadius, it) }
-        paint.style = Paint.Style.STROKE
-        paint.let { canvas.drawCircle(x, y, buttonRadius, it) }
+        canvas.drawCircle(x, y, buttonRadius, buttonPaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -346,6 +350,7 @@ class SwitchButton : View {
      * 保存动画状态
      */
     private class ViewState {
+
         /**
          * 按钮x位置[buttonMinX-buttonMaxX]
          */
@@ -412,6 +417,9 @@ class SwitchButton : View {
         loadingAnimator.addUpdateListener { animation ->
             viewState.progress = animation.animatedValue as Float
             invalidate()
+            if (beforeState.state == SwitchState.Loading && viewState.state == afterState.state) {
+                loadingAnimator.cancel()
+            }
         }
         setButtonProgress {
             isButtonAnimating = false
@@ -443,7 +451,9 @@ class SwitchButton : View {
             viewState.copy(afterState)
             if (state != viewState.state) {
                 state = viewState.state
-                listener?.invoke(this@SwitchButton, state!!)
+                state?.let {
+                    listener?.invoke(this@SwitchButton, it)
+                }
             }
         })
         animatorSet.playTogether(animator, colorAnimator)
@@ -457,8 +467,9 @@ class SwitchButton : View {
     }
 
     companion object {
+
         private val DEFAULT_WIDTH = 58.dp2px()
-        private val DEFAULT_HEIGHT = 36.dp2px()
+        private val DEFAULT_HEIGHT = 32.dp2px()
 
         private fun optInt(typedArray: TypedArray?, index: Int, def: Int): Int = typedArray?.getInt(index, def) ?: def
 
